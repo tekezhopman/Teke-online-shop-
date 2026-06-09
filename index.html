@@ -4,51 +4,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AliExpress - የኢትዮጵያ ገበያ</title>
+    <title>ET-Express - ኦንላይን ገበያ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f7; margin: 0; padding: 0; padding-bottom: 70px; }
-        header { background-color: #ff4747; color: white; padding: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 0; padding-bottom: 70px; }
+        header { background-color: #004085; color: white; padding: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header-container { display: flex; align-items: center; justify-content: space-between; max-width: 500px; margin: auto; }
-        .logo { font-size: 20px; font-weight: bold; letter-spacing: 1px; }
+        .logo { font-size: 20px; font-weight: bold; letter-spacing: 1px; cursor: pointer; user-select: none; }
         .cart-icon { position: relative; font-size: 20px; cursor: pointer; }
-        #cart-count { position: absolute; top: -8px; right: -10px; background: white; color: #ff4747; border-radius: 50%; padding: 2px 6px; font-size: 11px; font-weight: bold; }
+        #cart-count { position: absolute; top: -8px; right: -10px; background: white; color: #004085; border-radius: 50%; padding: 2px 6px; font-size: 11px; font-weight: bold; }
+        
         .search-container { max-width: 460px; margin: 10px auto; padding: 0 15px; }
-        .search-box { display: flex; background: white; border-radius: 25px; overflow: hidden; border: 2px solid #ff4747; }
+        .search-box { display: flex; background: white; border-radius: 25px; overflow: hidden; border: 2px solid #004085; }
         .search-box input { border: none; padding: 10px 15px; flex-grow: 1; outline: none; font-size: 14px; }
-        .search-box button { background: #ff4747; border: none; color: white; padding: 0 20px; cursor: pointer; }
+        .search-box button { background: #004085; border: none; color: white; padding: 0 20px; cursor: pointer; }
+        
         .main-container { max-width: 500px; margin: auto; padding: 10px; }
         .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; transition: 0.3s; }
-        .product-card:hover { transform: translateY(-3px); }
-        .product-img-box { background: #eaeaea; height: 140px; display: flex; align-items: center; justify-content: center; font-size: 50px; position: relative; }
-        .tag { position: absolute; top: 8px; left: 8px; background: #ff4747; color: white; font-size: 10px; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        .product-img-box { background: #e6f0fa; height: 140px; display: flex; align-items: center; justify-content: center; font-size: 50px; position: relative; }
+        .tag { position: absolute; top: 8px; left: 8px; background: #0056b3; color: white; font-size: 10px; padding: 3px 6px; border-radius: 3px; font-weight: bold; }
+        
         .product-details { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; }
         .product-title { font-size: 14px; font-weight: 500; color: #333; height: 38px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .rating { color: #ffbc00; font-size: 11px; margin: 5px 0; }
         .rating span { color: #888; margin-left: 5px; }
         .price-row { display: flex; align-items: baseline; gap: 5px; margin-top: auto; }
-        .current-price { color: #ff4747; font-size: 16px; font-weight: bold; }
+        .current-price { color: #004085; font-size: 16px; font-weight: bold; }
         .old-price { color: #999; font-size: 12px; text-decoration: line-through; }
+        
         .card-actions { display: flex; gap: 5px; margin-top: 10px; }
         .btn-card { flex: 1; padding: 8px; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; }
-        .btn-add { background: #fff1f1; color: #ff4747; border: 1px solid #ff4747; }
-        .btn-buy { background: linear-gradient(135deg, #ff7300, #ff4747); color: white; }
+        .btn-add { background: #eaf2fc; color: #004085; border: 1px solid #004085; }
+        .btn-buy { background: linear-gradient(135deg, #0056b3, #004085); color: white; }
+        
+        .checkout-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 85%; max-width: 360px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .modal-content h3 { margin-top: 0; color: #004085; font-size: 17px; margin-bottom: 15px; }
+        .modal-content input { width: 93%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
+        .modal-actions { display: flex; gap: 10px; }
+        .btn-modal { flex: 1; padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-cancel { background: #eaeaea; color: #333; }
+        .btn-confirm { background: #004085; color: white; }
+
+        .admin-panel { display: none; background: #1a252f; color: #fff; padding: 15px; margin-top: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .admin-panel h3 { margin-top: 0; color: #3498db; border-bottom: 1px solid #34495e; padding-bottom: 5px; }
+        .order-item { background: #2c3e50; padding: 10px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid #3498db; font-size: 13px; }
+        .order-item p { margin: 4px 0; }
+        .admin-actions { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-admin-call { background: #2e7d32; color: white; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; }
+        .btn-delete { background: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+
         .reviews-section { background: white; border-radius: 12px; padding: 15px; margin-top: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.04); }
         .reviews-section h3 { margin-top: 0; font-size: 16px; color: #333; border-bottom: 2px solid #f4f4f7; padding-bottom: 8px; }
-        .comment-form input, .comment-form textarea { width: 95%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-family: inherit; }
-        .comment-form button { background: #333; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .comment-form input, .comment-form textarea { width: 95%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+        .comment-form button { background: #004085; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .comments-display { margin-top: 15px; max-height: 200px; overflow-y: auto; }
         .user-comment { background: #f8f8fa; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
-        .user-comment strong { color: #ff4747; }
-        .floating-call { position: fixed; bottom: 20px; right: 20px; background: #2e7d32; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; }
+        .user-comment strong { color: #004085; }
+        
+        footer { text-align: center; padding: 20px; color: #666; font-size: 13px; margin-top: 20px; border-top: 1px solid #ddd; }
+        .floating-call { position: fixed; bottom: 20px; right: 20px; background: #0056b3; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 1000; text-decoration: none; }
     </style>
 </head>
 <body>
 
 <header>
     <div class="header-container">
-        <div class="logo"><i class="fa-solid fa-bag-shopping"></i> AliExp-ET</div>
+        <div class="logo" onclick="checkAdminClick()"><i class="fa-solid fa-rocket"></i> ET-Express</div>
         <div class="cart-icon" onclick="viewCart()">
             <i class="fa-solid fa-cart-shopping"></i>
             <span id="cart-count">0</span>
@@ -65,158 +88,215 @@
 
 <div class="main-container">
     <div class="product-grid" id="products-wrapper">
-        
-        <!-- ምርት 1 -->
         <div class="product-card" data-name="የወንዶች ስፖርት ጫማ">
-            <div class="product-img-box">
-                👟
-                <span class="tag">ተፈላጊ</span>
-            </div>
+            <div class="product-img-box">👟<span class="tag">ተፈላጊ</span></div>
             <div class="product-details">
                 <div class="product-title">የወንዶች ዘመናዊ ስፖርት ጫማ - Premium Sneakers</div>
                 <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><span>(48)</span></div>
-                <div class="price-row">
-                    <span class="current-price">3,500 ብር</span>
-                    <span class="old-price">4,200 ብር</span>
-                </div>
+                <div class="price-row"><span class="current-price">3,500 ብር</span><span class="old-price">4,200 ብር</span></div>
                 <div class="card-actions">
                     <button class="btn-card btn-add" onclick="addToCart('የወንዶች ስፖርት ጫማ')">ቅርጫት</button>
-                    <a href="https://t.me/Telegram_Username?text=ሰላም%20የወንዶች%20ስፖርት%20ጫማ%20መግዛት%20ፈልጌ%20ነበር" target="_blank" class="btn-card btn-buy">እዘዝ</a>
+                    <button class="btn-card btn-buy" onclick="openCheckout('የወንዶች ስፖርት ጫማ', '3,500 ብር')">እዘዝ</button>
                 </div>
             </div>
         </div>
 
-        <!-- ምርት 2 -->
         <div class="product-card" data-name="የሴቶች ሂል ጫማ">
-            <div class="product-img-box">
-                👠
-                <span class="tag">-20%</span>
-            </div>
+            <div class="product-img-box">👠<span class="tag">-20%</span></div>
             <div class="product-details">
                 <div class="product-title">የሴቶች ውብ የፓርቲ ተረከዝ ጫማ - Luxury Heels</div>
                 <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><span>(12)</span></div>
-                <div class="price-row">
-                    <span class="current-price">2,800 ብር</span>
-                    <span class="old-price">3,500 ብር</span>
-                </div>
+                <div class="price-row"><span class="current-price">2,800 ብር</span><span class="old-price">3,500 ብር</span></div>
                 <div class="card-actions">
                     <button class="btn-card btn-add" onclick="addToCart('የሴቶች ሂል ጫማ')">ቅርጫት</button>
-                    <a href="https://t.me/Tekezhopeman?text=ሰላም%20የሴቶች%20ሂል%20ጫማ%20መግዛት%20ፈልጌ%20ነበር" target="_blank" class="btn-card btn-buy">እዘዝ</a>
+                    <button class="btn-card btn-buy" onclick="openCheckout('የሴቶች ሂል ጫማ', '2,800 ብር')">እዘዝ</button>
                 </div>
             </div>
         </div>
 
-        <!-- ምርት 3 -->
         <div class="product-card" data-name="ዘመናዊ ስማርት ስልክ">
-            <div class="product-img-box">
-                📱
-                <span class="tag">አዲስ</span>
-            </div>
+            <div class="product-img-box">📱<span class="tag">አዲስ</span></div>
             <div class="product-details">
                 <div class="product-title">አዲስ ሞዴል ስማርት ስልክ - 128GB Smartphone</div>
                 <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><span>(104)</span></div>
-                <div class="price-row">
-                    <span class="current-price">25,000 ብር</span>
-                    <span class="old-price">28,000 ብር</span>
-                </div>
+                <div class="price-row"><span class="current-price">25,000 ብር</span><span class="old-price">28,000 ብር</span></div>
                 <div class="card-actions">
                     <button class="btn-card btn-add" onclick="addToCart('ዘመናዊ ስማርት ስልክ')">ቅርጫት</button>
-                    <a href="https://t.me/Tekezhopeman?text=ሰላም%20ዘመናዊ%20ስማርት%20ስልክ%20መግዛት%20ፈልጌ%20ነበር" target="_blank" class="btn-card btn-buy">እዘዝ</a>
+                    <button class="btn-card btn-buy" onclick="openCheckout('ዘመናዊ ስማርት ስልክ', '25,000 ብር')">እዘዝ</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- ምርት 4 -->
-        <div class="product-card" data-name="ስማርት ሰዓት">
-            <div class="product-img-box">
-                ⌚
-                <span class="tag">Hot</span>
-            </div>
-            <div class="product-details">
-                <div class="product-title">የውሃ መቋቋም የሚችል ዘመናዊ ስማርት ሰዓት - Smart Watch</div>
-                <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><span>(67)</span></div>
-                <div class="price-row">
-                    <span class="current-price">4,200 ብር</span>
-                    <span class="old-price">5,000 ብር</span>
-                </div>
-                <div class="card-actions">
-                    <button class="btn-card btn-add" onclick="addToCart('ስማርት ሰዓት')">ቅርጫት</button>
-                    <a href="https://t.me/Tekezhopeman?text=ሰላም%20ስማርት%20ሰዓት%20መግዛት%20ፈልጌ%20ነበር" target="_blank" class="btn-card btn-buy">እዘዝ</a>
-                </div>
-            </div>
-        </div>
-
+    <div class="admin-panel" id="adminPanel">
+        <h3>🛠️ ET-Express የአስተዳዳሪ ክፍል (የትዕዛዞች ዝርዝር)</h3>
+        <div id="ordersList">ትዕዛዝ አልተመዘገበም።</div>
     </div>
 
     <div class="reviews-section">
         <h3><i class="fa-regular fa-comments"></i> የደንበኞች አስተያየት (Reviews)</h3>
         <div class="comment-form">
             <input type="text" id="reviewerName" placeholder="ስምዎ...">
-            <textarea id="reviewerText" rows="2" placeholder="ስለ ዕቃዎቹ ጥራት ወይም ዋጋ አስተያየትዎን እዚህ ይጻፉ..."></textarea>
+            <textarea id="reviewerText" rows="2" placeholder="አስተያየትዎን እዚህ ይጻፉ..."></textarea>
             <button onclick="postReview()">አስተያየት ስጥ</button>
         </div>
         <div class="comments-display" id="commentsBox">
-            <div class="user-comment"><strong>ዮናስ ማሞ፦</strong> ጫማውን ገዝቼዋለሁ በጣም ጥራት አለው፣ ይመቻችሁ! ⭐⭐⭐⭐⭐</div>
-            <div class="user-comment"><strong>ኪያ ቶሎሳ፦</strong> ስልኩ ዋጋው ቅናሽ አለው ወይስ ማውራት ይቻላል? ⭐⭐⭐⭐</div>
+            <div class="user-comment"><strong>ዮናስ ማሞ፦</strong> ጫማውን ገዝቼዋለሁ በጣም ጥራት አለው! ⭐⭐⭐⭐⭐</div>
         </div>
     </div>
 </div>
 
-<a href="tel:0915678256" class="floating-call">
-    <i class="fa-solid fa-phone"></i>
-</a>
+<div class="checkout-modal" id="checkoutModal">
+    <div class="modal-content">
+        <h3 id="modalProductTitle">የዕቃ ማዘዣ ፎርም</h3>
+        <input type="text" id="customerName" placeholder="ሙሉ ስምዎን ያስገቡ...">
+        <input type="tel" id="customerPhone" placeholder="የስልክ ቁጥርዎን ያስገቡ...">
+        <input type="text" id="customerAddress" placeholder="ያሉበትን ከተማ/ሰፈር ያስገቡ...">
+        <div class="modal-actions">
+            <button class="btn-modal btn-cancel" onclick="closeCheckout()">አጥፋ</button>
+            <button class="btn-modal btn-confirm" onclick="submitOrder()">ትዕዛዝ ጨርስ</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2026 ET-Express. መብቱ የተጠበቀ ነው።<br>📍 ሃዋሳ፣ ኢትዮጵያ</p>
+</footer>
+
+<a href="tel:0915678256" class="floating-call"><i class="fa-solid fa-phone"></i></a>
 
 <script>
+    let selectedProduct = "";
+    let selectedPrice = "";
     let cart = [];
+    let clickCount = 0;
+
+    function checkAdminClick() {
+        clickCount++;
+        if (clickCount === 3) {
+            let panel = document.getElementById('adminPanel');
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+                displayOrders();
+            }
+            clickCount = 0; 
+        }
+        setTimeout(() => { clickCount = 0; }, 2000); 
+    }
+
+    function openCheckout(name, price) {
+        selectedProduct = name;
+        selectedPrice = price;
+        document.getElementById('modalProductTitle').innerText = "ማዘዣ፦ " + name;
+        document.getElementById('checkoutModal').style.display = "flex";
+    }
+
+    function closeCheckout() {
+        document.getElementById('checkoutModal').style.display = "none";
+    }
+
+    function submitOrder() {
+        let name = document.getElementById('customerName').value;
+        let phone = document.getElementById('customerPhone').value;
+        let address = document.getElementById('customerAddress').value;
+
+        if(name == "" || phone == "" || address == "") {
+            alert("እባክዎ ሁሉንም መረጃዎች በትክክል ይሙሉ!");
+            return;
+        }
+
+        let newOrder = {
+            product: selectedProduct,
+            price: selectedPrice,
+            customer: name,
+            phone: phone,
+            address: address,
+            date: new Date().toLocaleString('am-ET')
+        };
+
+        let orders = JSON.parse(localStorage.getItem('shop_orders')) || [];
+        orders.push(newOrder);
+        localStorage.setItem('shop_orders', JSON.stringify(orders));
+
+        alert("🎉 እናመሰግናለን! ትዕዛዝዎ በET-Express በተሳካ ሁኔታ ተመዝግቧል።");
+        closeCheckout();
+        
+        document.getElementById('customerName').value = "";
+        document.getElementById('customerPhone').value = "";
+        document.getElementById('customerAddress').value = "";
+    }
+
+    function displayOrders() {
+        let orders = JSON.parse(localStorage.getItem('shop_orders')) || [];
+        let listContainer = document.getElementById('ordersList');
+        
+        if (orders.length === 0) {
+            listContainer.innerHTML = "ትዕዛዝ አልተመዘገበም።";
+            return;
+        }
+
+        listContainer.innerHTML = "";
+        orders.forEach((order, index) => {
+            let orderBox = document.createElement('div');
+            orderBox.className = 'order-item';
+            orderBox.innerHTML = `
+                <p><strong>📦 ዕቃ፦</strong> ${order.product} (${order.price})</p>
+                <p><strong>👤 ደንበኛ፦</strong> ${order.customer}</p>
+                <p><strong>📞 ስልክ፦</strong> ${order.phone}</p>
+                <p><strong>📍 አድራሻ፦</strong> ${order.address}</p>
+                <p><strong>🕒 ሰዓት፦</strong> ${order.date}</p>
+                <div class="admin-actions">
+                    <a href="tel:${order.phone}" class="btn-admin-call"><i class="fa-solid fa-phone"></i> ደውል</a>
+                    <button class="btn-delete" onclick="deleteOrder(${index})">ትዕዛዝ አጥፋ</button>
+                </div>
+            `;
+            listContainer.appendChild(orderBox);
+        });
+    }
+
+    function deleteOrder(index) {
+        let orders = JSON.parse(localStorage.getItem('shop_orders')) || [];
+        orders.splice(index, 1);
+        localStorage.setItem('shop_orders', JSON.stringify(orders));
+        displayOrders();
+    }
+
     function addToCart(productName) {
         cart.push(productName);
         document.getElementById('cart-count').innerText = cart.length;
-        alert("🎉 " + productName + " በተሳካ ሁኔታ ወደ ቅርጫትዎ ተጨምሯል!");
+        alert("🎉 ወደ ቅርጫት ተጨምሯል!");
     }
     
     function viewCart() {
-        if(cart.length == 0) {
-            alert("የእርስዎ የግዢ ቅርጫት ባዶ ነው!");
-        } else {
-            alert("🛒 በቅርጫትዎ ውስጥ ያሉ ዕቃዎች፦\n\n" + cart.join("\n") + "\n\nለመግዛት የዕቃዎቹን 'እዘዝ' ቁልፍ ተጭነው በቴሌግራም ያናግሩን።");
-        }
+        if(cart.length == 0) alert("የእርስዎ የግዢ ቅርጫት ባዶ ነው!");
+        else alert("🛒 በቅርጫትዎ ውስጥ ያሉ ዕቃዎች፦\n\n" + cart.join("\n"));
     }
 
     function filterProducts() {
         let input = document.getElementById('search-input').value.toLowerCase();
         let cards = document.getElementsByClassName('product-card');
-        
         for (let i = 0; i < cards.length; i++) {
             let name = cards[i].getAttribute('data-name').toLowerCase();
-            if (name.includes(input)) {
-                cards[i].style.display = "";
-            } else {
-                cards[i].style.display = "none";
-            }
+            if (name.includes(input)) cards[i].style.display = "";
+            else cards[i].style.display = "none";
         }
     }
 
     function postReview() {
         let name = document.getElementById('reviewerName').value;
         let text = document.getElementById('reviewerText').value;
-        
-        if(name == "" || text == "") {
-            alert("እባክዎ ስም እና አስተያየት በትክክል ይጻፉ!");
-            return;
-        }
-        
+        if(name == "" || text == "") return;
         let newComment = document.createElement('div');
         newComment.className = 'user-comment';
         newComment.innerHTML = "<strong>" + name + "፦</strong> " + text + " ⭐⭐⭐⭐⭐";
-        
         let box = document.getElementById('commentsBox');
         box.insertBefore(newComment, box.firstChild);
-        
         document.getElementById('reviewerName').value = "";
         document.getElementById('reviewerText').value = "";
     }
 </script>
-
 </body>
 </html>
 
