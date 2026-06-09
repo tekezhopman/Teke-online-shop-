@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="am">
 <head>
@@ -59,7 +59,7 @@
         .reviews-section h3 { margin-top: 0; font-size: 16px; color: #333; border-bottom: 2px solid #f4f4f7; padding-bottom: 8px; }
         .comment-form input, .comment-form textarea { width: 95%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
         .comment-form button { background: #004085; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .comments-display { margin-top: 15px; max-height: 200px; overflow-y: auto; }
+        .comments-display { margin-top: 15px; max-height: 200px; overflow-y: auto_ { max-height: 200px; overflow-y: auto; }
         .user-comment { background: #f8f8fa; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
         .user-comment strong { color: #004085; }
         
@@ -114,15 +114,19 @@
             </div>
         </div>
 
-        <div class="product-card" data-name="ዘመናዊ ስማርት ስልክ">
-            <div class="product-img-box">📱<span class="tag">አዲስ</span></div>
+        <!-- የተስተካከለው የiPhone 14 Pro Max ክፍል -->
+        <div class="product-card" data-name="iPhone 14 Pro Max">
+            <div class="product-img-box">
+                <img src="https://i.ibb.co/Pvn52h8L/FF2-FD88-B-3-FEE-42-D7-B7-B5-ED154-A1-FF701.png" style="width:100%; height:100%; object-fit:cover;">
+                <span class="tag">አዲስ</span>
+            </div>
             <div class="product-details">
-                <div class="product-title">አዲስ ሞዴል ስማርት ስልክ - 128GB Smartphone</div>
+                <div class="product-title">iPhone 14 Pro Max - እጅግ ዘመናዊ ስልክ</div>
                 <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><span>(104)</span></div>
-                <div class="price-row"><span class="current-price">25,000 ብር</span><span class="old-price">28,000 ብር</span></div>
+                <div class="price-row"><span class="current-price">95,000 ብር</span><span class="old-price">110,000 ብር</span></div>
                 <div class="card-actions">
-                    <button class="btn-card btn-add" onclick="addToCart('ዘመናዊ ስማርት ስልክ')">ቅርጫት</button>
-                    <button class="btn-card btn-buy" onclick="openCheckout('ዘመናዊ ስማርት ስልክ', '25,000 ብር')">እዘዝ</button>
+                    <button class="btn-card btn-add" onclick="addToCart('iPhone 14 Pro Max')">ቅርጫት</button>
+                    <button class="btn-card btn-buy" onclick="openCheckout('iPhone 14 Pro Max', '95,000 ብር')">እዘዝ</button>
                 </div>
             </div>
         </div>
@@ -174,12 +178,17 @@
     function checkAdminClick() {
         clickCount++;
         if (clickCount === 3) {
-            let panel = document.getElementById('adminPanel');
-            if (panel.style.display === "block") {
-                panel.style.display = "none";
-            } else {
-                panel.style.display = "block";
-                displayOrders();
+            let password = prompt("እባክዎ የአስተዳዳሪ የይለፍ ቃል ያስገቡ፦");
+            if (password === "1234") { 
+                let panel = document.getElementById('adminPanel');
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                    displayOrders();
+                }
+            } else if (password !== null) {
+                alert("❌ የተሳሳተ የይለፍ ቃል ነው!");
             }
             clickCount = 0; 
         }
