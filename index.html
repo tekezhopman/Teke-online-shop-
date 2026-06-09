@@ -4,11 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ET-Express - ኤሌክትሮኒክስና ስልኮች</title>
+    <title>ET-Express - ኦንላይን ገበያ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 0; padding-bottom: 70px; }
-        header { background-color: #0b1a30; color: white; padding: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        
+        .announcement-bar { background-color: #ffc107; color: #0b1a30; text-align: center; padding: 8px 10px; font-size: 13px; font-weight: bold; position: sticky; top: 0; z-index: 101; border-bottom: 2px solid #e0a800; }
+        
+        header { background-color: #0b1a30; color: white; padding: 12px; position: sticky; top: 35px; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .header-container { display: flex; align-items: center; justify-content: space-between; max-width: 500px; margin: auto; }
         .logo { font-size: 20px; font-weight: bold; letter-spacing: 1px; cursor: pointer; user-select: none; color: #00bcd4; }
         .cart-icon { position: relative; font-size: 20px; cursor: pointer; }
@@ -21,9 +24,15 @@
         
         .main-container { max-width: 500px; margin: auto; padding: 10px; }
         .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; transition: 0.3s; }
-        .product-img-box { background: #e6f0fa; height: 150px; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; }
+        
+        .product-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; transition: 0.3s; position: relative; }
+        .product-card.sold-out { opacity: 0.75; }
+        .product-img-box { background: #e6f0fa; height: 150px; display: flex; align-items: center; justify-content: center; font-size: 50px; position: relative; cursor: pointer; }
+        
         .tag { position: absolute; top: 8px; left: 8px; background: #ff5722; color: white; font-size: 10px; padding: 3px 6px; border-radius: 3px; font-weight: bold; z-index: 10; }
+        .tag.dubai { background: #2196f3; }
+        .tag.sold { background: #dc3545; font-size: 11px; padding: 4px 8px; left: auto; right: 8px; }
+        .tag.popular { background: #0056b3; }
         
         .product-details { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; }
         .product-title { font-size: 14px; font-weight: 600; color: #333; height: 38px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 5px; }
@@ -37,6 +46,8 @@
         .btn-card { flex: 1; padding: 8px; border: none; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; text-align: center; text-decoration: none; }
         .btn-add { background: #eaf2fc; color: #0b1a30; border: 1px solid #0b1a30; }
         .btn-buy { background: linear-gradient(135deg, #0056b3, #0b1a30); color: white; }
+        
+        .btn-disabled { background: #e0e0e0 !important; color: #a0a0a0 !important; border: 1px solid #ccc !important; cursor: not-allowed; }
         
         .image-zoom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
         .zoom-img-content { max-width: 95%; max-height: 85%; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
@@ -73,9 +84,13 @@
 </head>
 <body>
 
+<div class="announcement-bar">
+    📢 ላፕቶፕ መግዛት የምትፈልጉ ደንበኞች፤ የምትፈልጉትን ሞዴልና ስፔስፊኬሽን ከታች ባለው የአስተያየት መስጫ (Comment) ላይ ይጻፉልን!
+</div>
+
 <header>
     <div class="header-container">
-        <div class="logo" onclick="checkAdminClick()"><i class="fa-solid fa-laptop-code"></i> ET-Gadgets</div>
+        <div class="logo" onclick="checkAdminClick()"><i class="fa-solid fa-rocket"></i> ET-Express</div>
         <div class="cart-icon" onclick="viewCart()">
             <i class="fa-solid fa-cart-shopping"></i>
             <span id="cart-count">0</span>
@@ -85,7 +100,7 @@
 
 <div class="search-container">
     <div class="search-box">
-        <input type="text" id="search-input" placeholder="ስልክ፣ አይፓድ፣ ኤርፖድስ ይፈልጉ..." onkeyup="filterProducts()">
+        <input type="text" id="search-input" placeholder="ጫማ፣ ስልክ፣ ላፕቶፕ፣ አይፓድ ይፈልጉ..." onkeyup="filterProducts()">
         <button><i class="fa-solid fa-magnifying-glass"></i></button>
     </div>
 </div>
@@ -93,7 +108,54 @@
 <div class="main-container">
     <div class="product-grid" id="products-wrapper">
         
-        <!-- PRODUCT 1: iPhone -->
+        <div class="product-card" data-name="Original Nike Air Force">
+            <div class="product-img-box" onclick="zoomImage(this)">
+                <img src="https://i.ibb.co/Z1z6KvKJ/78-FEFA1-C-E49-D-4970-B85-A-2-BC6921465-C2.jpg" style="width:100%; height:100%; object-fit:cover;">
+                <span class="tag popular">ተፈላጊ</span>
+            </div>
+            <div class="product-details">
+                <div class="product-title">Original Nike Air Force - ዘመናዊ የመዝናኛ ጫማ (Size 40)</div>
+                <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><span>(48)</span></div>
+                <div class="price-row"><span class="current-price">3,900 ብር</span><span class="old-price">4,500 ብር</span></div>
+                <div class="card-actions">
+                    <button class="btn-card btn-add" onclick="addToCart('Original Nike Air Force (Size 40)')">ቅርጫት</button>
+                    <button class="btn-card btn-buy" onclick="openCheckout('Original Nike Air Force (Size 40)', '3,900 ብር')">እዘዝ</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card" data-name="HP EliteBook Laptop">
+            <div class="product-img-box" onclick="zoomImage(this)">
+                <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=500&auto=format&fit=crop&q=60" style="width:100%; height:100%; object-fit:cover;">
+                <span class="tag dubai">Dubai Used</span>
+            </div>
+            <div class="product-details">
+                <div class="product-title">HP EliteBook - Core i5 (8GB RAM / 256GB SSD) ምርጥ ይዞታ</div>
+                <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><span>(34)</span></div>
+                <div class="price-row"><span class="current-price">34,500 ብር</span><span class="old-price">39,000 ብር</span></div>
+                <div class="card-actions">
+                    <button class="btn-card btn-add" onclick="addToCart('HP EliteBook Laptop (Dubai Used)')">ቅርጫት</button>
+                    <button class="btn-card btn-buy" onclick="openCheckout('HP EliteBook Laptop (Dubai Used)', '34,500 ብር')">እዘዝ</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-card" data-name="iPhone 14 Pro Max">
+            <div class="product-img-box" onclick="zoomImage(this)">
+                <img src="https://i.ibb.co/Pvn52h8L/FF2-FD88-B-3-FEE-42-D7-B7-B5-ED154-A1-FF701.png" style="width:100%; height:100%; object-fit:cover;">
+                <span class="tag">አዲስ</span>
+            </div>
+            <div class="product-details">
+                <div class="product-title">iPhone 14 Pro Max - እጅግ ዘመናዊ ስልክ</div>
+                <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><span>(104)</span></div>
+                <div class="price-row"><span class="current-price">95,000 ብር</span><span class="old-price">110,000 ብር</span></div>
+                <div class="card-actions">
+                    <button class="btn-card btn-add" onclick="addToCart('iPhone 14 Pro Max')">ቅርጫት</button>
+                    <button class="btn-card btn-buy" onclick="openCheckout('iPhone 14 Pro Max', '95,000 ብር')">እዘዝ</button>
+                </div>
+            </div>
+        </div>
+
         <div class="product-card" data-name="iPhone 15 Pro Max">
             <div class="product-img-box" onclick="zoomImage(this)">
                 <img src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500&auto=format&fit=crop&q=60" style="width:100%; height:100%; object-fit:cover;">
@@ -110,24 +172,35 @@
             </div>
         </div>
 
-        <!-- PRODUCT 2: iPad -->
-        <div class="product-card" data-name="iPad Pro M2">
-            <div class="product-img-box" onclick="zoomImage(this)">
-                <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&auto=format&fit=crop&q=60" style="width:100%; height:100%; object-fit:cover;">
-                <span class="tag">አዲስ</span>
-            </div>
+        <div class="product-card" data-name="የሴቶች ሂል ጫማ">
+            <div class="product-img-box" onclick="zoomImage(this)">👠<span class="tag">-20%</span></div>
             <div class="product-details">
-                <div class="product-title">iPad Pro M2 - 11-inch (Wi-Fi + Cellular)</div>
-                <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><span>(65)</span></div>
-                <div class="price-row"><span class="current-price">78,000 ብር</span><span class="old-price">85,000 ብር</span></div>
+                <div class="product-title">የሴቶች ውብ የፓርቲ ተረከዝ ጫማ - Luxury Heels</div>
+                <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><span>(12)</span></div>
+                <div class="price-row"><span class="current-price">2,800 ብር</span><span class="old-price">3,500 ብር</span></div>
                 <div class="card-actions">
-                    <button class="btn-card btn-add" onclick="addToCart('iPad Pro M2')">ቅርጫት</button>
-                    <button class="btn-card btn-buy" onclick="openCheckout('iPad Pro M2', '78,000 ብር')">እዘዝ</button>
+                    <button class="btn-card btn-add" onclick="addToCart('የሴቶች ሂል ጫማ')">ቅርጫት</button>
+                    <button class="btn-card btn-buy" onclick="openCheckout('የሴቶች ሂል ጫማ', '2,800 ብር')">እዘዝ</button>
                 </div>
             </div>
         </div>
 
-        <!-- PRODUCT 3: AirPods -->
+        <div class="product-card sold-out" data-name="iPad Pro M2">
+            <div class="product-img-box" onclick="zoomImage(this)">
+                <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&auto=format&fit=crop&q=60" style="width:100%; height:100%; object-fit:cover;">
+                <span class="tag sold">SOLD OUT</span>
+            </div>
+            <div class="product-details">
+                <div class="product-title">iPad Pro M2 - 11-inch (Wi-Fi + Cellular)</div>
+                <div class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><span>(65)</span></div>
+                <div class="price-row"><span class="current-price">78,000 ብር</span></div>
+                <div class="card-actions">
+                    <button class="btn-card btn-disabled" disabled>ቅርጫት</button>
+                    <button class="btn-card btn-disabled" disabled>ያለቀ</button>
+                </div>
+            </div>
+        </div>
+
         <div class="product-card" data-name="AirPods Max">
             <div class="product-img-box" onclick="zoomImage(this)">
                 <img src="https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?w=500&auto=format&fit=crop&q=60" style="width:100%; height:100%; object-fit:cover;">
@@ -158,13 +231,14 @@
     </div>
 
     <div class="reviews-section">
-        <h3><i class="fa-regular fa-comments"></i> የደንበኞች አስተያየት (Reviews)</h3>
+        <h3><i class="fa-regular fa-comments"></i> የፈላጊዎች እና የደንበኞች አስተያየት (Reviews)</h3>
         <div class="comment-form">
             <input type="text" id="reviewerName" placeholder="ስምዎ...">
-            <textarea id="reviewerText" rows="2" placeholder="አስተያየትዎን እዚህ ይጻፉ..."></textarea>
-            <button onclick="postReview()">አስተያየት ስጥ</button>
+            <textarea id="reviewerText" rows="2" placeholder="የምትፈልጉትን የላፕቶፕ አይነት ወይም አስተያየት እዚህ ይጻፉ..."></textarea>
+            <button onclick="postReview()">አስገባ</button>
         </div>
         <div class="comments-display" id="commentsBox">
+            <div class="user-comment"><strong>ዮናስ ቶሎሳ፦</strong> Core i7 16GB RAM ያለው ዱባይ ዩዝድ ላፕቶፕ ካለ ማዘዝ እፈልጋለሁ! 👋</div>
             <div class="user-comment"><strong>ናሆም አበበ፦</strong> አይፓዱን ገዝቼዋለሁ በጣም ፈጣን ነው፣ ኦሪጅናል ነው! ⭐⭐⭐⭐⭐</div>
         </div>
     </div>
@@ -184,7 +258,7 @@
 </div>
 
 <footer>
-    <p>© 2026 ET-Gadgets. መብቱ የተጠበቀ ነው።<br>📍 ሃዋሳ፣ ኢትዮጵያ</p>
+    <p>© 2026 ET-Express. መብቱ የተጠበቀ ነው።<br>📍 ሃዋሳ፣ ኢትዮጵያ</p>
 </footer>
 
 <a href="tel:0915678256" class="floating-call"><i class="fa-solid fa-phone"></i></a>
@@ -202,6 +276,9 @@
         
         if (imgElement) {
             container.innerHTML = `<img src="${imgElement.src}" class="zoom-img-content">`;
+        } else {
+            let text = element.textContent.replace(element.querySelector('.tag') ? element.querySelector('.tag').textContent : '', '').trim();
+            container.innerHTML = `<div style="font-size:120px;">${text}</div>`;
         }
         modal.style.display = "flex";
     }
@@ -335,7 +412,7 @@
         if(name == "" || text == "") return;
         let newComment = document.createElement('div');
         newComment.className = 'user-comment';
-        newComment.innerHTML = "<strong>" + name + "፦</strong> " + text + " ⭐⭐⭐⭐⭐";
+        newComment.innerHTML = "<strong>" + name + "፦</strong> " + text;
         let box = document.getElementById('commentsBox');
         box.insertBefore(newComment, box.firstChild);
         document.getElementById('reviewerName').value = "";
